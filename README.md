@@ -29,3 +29,22 @@ app.get('/', (req, res) => {
   }
 });
 ```
+
+swagger configuration:
+
+```javascript
+{
+  "paths": {
+    "/": {
+      "get": {
+        "x-roles": ["admin"],
+        "responses": {
+          "200": {
+            "description": "Test endpoint"
+          }
+        }
+      }
+    }
+  }
+}
+```
