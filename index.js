@@ -5,12 +5,23 @@ const defaultOptions = {
 };
 
 const roleChecker = (req, allowedRoles = [], options) => {
-  const requiredRoles = req.swagger[options.swaggerRolesProperty];
+  const path = req.swagger.path;
+  if (!path) return true;
+
+  const method = req.method.toLowerCase();
+  const endpoint = path[method];
+  if (!endpoint) return true;
+
+  const requiredRoles = endpoint[options.swaggerRolesProperty];
+  if (!requiredRoles) return true;
+
   if (requiredRoles.includes(options.anonymusRole)) return true;
+
   for (let i = 0; i < allowedRoles.length; i++) {
     const allowedRole = allowedRoles[i];
     if (requiredRoles.includes(allowedRole)) return true;
   }
+
   return false;
 };
 
