@@ -1,10 +1,12 @@
 const defaultOptions = {
   swaggerRolesProperty: 'x-roles',
   anonymusRole: 'anonymus',
-  unauthorizedText: 'Unauthorized'
+  unauthorizedText: 'Unauthorized',
+  userProperty: 'user',
+  roleProperty: 'role'
 };
 
-const roleChecker = (req, allowedRoles = [], options) => {
+const roleChecker = (req, options) => {
   const path = req.swagger.path;
   if (!path) return true;
 
@@ -17,17 +19,15 @@ const roleChecker = (req, allowedRoles = [], options) => {
 
   if (requiredRoles.includes(options.anonymusRole)) return true;
 
-  for (let i = 0; i < allowedRoles.length; i++) {
-    const allowedRole = allowedRoles[i];
-    if (requiredRoles.includes(allowedRole)) return true;
-  }
+  const role = req[options.userProperty][options.roleProperty];
+  if (!role) return false;
 
-  return false;
+  return requiredRoles.includes(role);
 };
 
-const middleware = (allowedRoles = [], options = {}) => (req, res, next) => {
+const middleware = (options = {}) => (req, res, next) => {
   options = Object.assign({}, defaultOptions, options);
-  if (roleChecker(req, allowedRoles, options)) {
+  if (roleChecker(req, options)) {
     next();
   } else {
     res.status(401).send(options.unauthorizedText);

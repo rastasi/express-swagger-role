@@ -5,33 +5,32 @@ Middleware for swagger definition driven role system.
 ## Install
 
 ```bash
-npm install express-savagger-role --save
+npm install express-swagger-role --save
 ```
 
 ## Usage
 
-as middleware
+The package check the *req.user.role* property of endpoint handler and the *x-roles* array property of the swagger file.
 
+as middleware
 ```javascript
 const expressSwaggerRole = require('express-swagger-role');
 
-app.use(expressSwaggerRole.middleware(['normal', 'admin']));
+app.use(expressSwaggerRole.middleware());
 ```
 
 as method
-
 ```javascript
 const expressSwaggerRole = require('express-swagger-role');
 
 app.get('/', (req, res) => {
-  if (exporessSwaggerRole.roleChecker(req, ['admin']) {
+  if (exporessSwaggerRole.roleChecker(req)) {
     console.log('This log run only for admins');
   }
 });
 ```
 
 swagger configuration:
-
 ```javascript
 {
   "paths": {
